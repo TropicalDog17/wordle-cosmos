@@ -1,0 +1,12 @@
+syntax = "proto3";
+package tropicaldog17.wordle.wordle;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/TropicalDog17/wordle/x/wordle/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+}
