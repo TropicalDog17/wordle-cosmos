@@ -25,12 +25,21 @@ export interface RpcStatus {
  */
 export type WordleParams = object;
 
+export interface WordleQueryGetSystemInfoResponse {
+  SystemInfo?: WordleSystemInfo;
+}
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
 export interface WordleQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: WordleParams;
+}
+
+export interface WordleSystemInfo {
+  /** @format uint64 */
+  nextId?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -240,6 +249,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<WordleQueryParamsResponse, RpcStatus>({
       path: `/TropicalDog17/wordle/wordle/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySystemInfo
+   * @summary Queries a SystemInfo by index.
+   * @request GET:/TropicalDog17/wordle/wordle/system_info
+   */
+  querySystemInfo = (params: RequestParams = {}) =>
+    this.request<WordleQueryGetSystemInfoResponse, RpcStatus>({
+      path: `/TropicalDog17/wordle/wordle/system_info`,
       method: "GET",
       format: "json",
       ...params,

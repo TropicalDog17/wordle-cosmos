@@ -1,0 +1,9 @@
+syntax = "proto3";
+package tropicaldog17.wordle.wordle;
+
+option go_package = "github.com/TropicalDog17/wordle/x/wordle/types";
+
+message SystemInfo {
+  uint64 nextId = 1; 
+  
+}
