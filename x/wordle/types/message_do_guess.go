@@ -1,6 +1,9 @@
 package types
 
 import (
+	"strconv"
+
+	"github.com/TropicalDog17/wordle/x/wordle/rules"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -42,6 +45,16 @@ func (msg *MsgDoGuess) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if !rules.ValidWord(msg.Letter) {
+		return sdkerrors.Wrapf(ErrInvalidGuess, "word should only contain English letters")
+	}
+	gameIndex, err := strconv.ParseInt(msg.GameIndex, 10, 64)
+	if err != nil {
+		return sdkerrors.Wrapf(ErrInvalidGameIndex, "not parseable (%s)", err)
+	}
+	if uint64(gameIndex) < DefaultIndex {
+		return sdkerrors.Wrapf(ErrInvalidGameIndex, "number too low (%d)", gameIndex)
 	}
 	return nil
 }

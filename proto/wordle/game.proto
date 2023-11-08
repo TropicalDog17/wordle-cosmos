@@ -7,7 +7,7 @@ message Game {
   string index = 1; 
   string secret = 2; 
   string player = 3; 
-  string moveCount = 4; 
+  uint64 moveCount = 4; 
   bool isWin = 5;
   
 }

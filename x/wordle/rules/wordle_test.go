@@ -111,4 +111,7 @@ func TestParseGuessState(t *testing.T) {
 
 	res = rules.ParseGuessState(rules.GuessState{rules.Partial, rules.Partial, rules.Partial, rules.Partial, rules.Partial, rules.Partial})
 	assert.Equal(t, "PPPPPP", res)
+
+	res = rules.ParseGuessState(rules.GuessState{rules.Partial, rules.Wrong, rules.Partial, rules.Wrong, rules.Partial, rules.Wrong})
+	assert.Equal(t, "PWPWPW", res)
 }
