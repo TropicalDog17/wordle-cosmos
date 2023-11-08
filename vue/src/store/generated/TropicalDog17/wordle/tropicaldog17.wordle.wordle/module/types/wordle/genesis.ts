@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { Params } from "../wordle/params";
 import { SystemInfo } from "../wordle/system_info";
+import { Game } from "../wordle/game";
 import { Writer, Reader } from "protobufjs/minimal";
 
 export const protobufPackage = "tropicaldog17.wordle.wordle";
@@ -8,8 +9,9 @@ export const protobufPackage = "tropicaldog17.wordle.wordle";
 /** GenesisState defines the wordle module's genesis state. */
 export interface GenesisState {
   params: Params | undefined;
-  /** this line is used by starport scaffolding # genesis/proto/state */
   systemInfo: SystemInfo | undefined;
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  gameList: Game[];
 }
 
 const baseGenesisState: object = {};
@@ -22,6 +24,9 @@ export const GenesisState = {
     if (message.systemInfo !== undefined) {
       SystemInfo.encode(message.systemInfo, writer.uint32(18).fork()).ldelim();
     }
+    for (const v of message.gameList) {
+      Game.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -29,6 +34,7 @@ export const GenesisState = {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
+    message.gameList = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -37,6 +43,9 @@ export const GenesisState = {
           break;
         case 2:
           message.systemInfo = SystemInfo.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.gameList.push(Game.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -48,6 +57,7 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
+    message.gameList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromJSON(object.params);
     } else {
@@ -57,6 +67,11 @@ export const GenesisState = {
       message.systemInfo = SystemInfo.fromJSON(object.systemInfo);
     } else {
       message.systemInfo = undefined;
+    }
+    if (object.gameList !== undefined && object.gameList !== null) {
+      for (const e of object.gameList) {
+        message.gameList.push(Game.fromJSON(e));
+      }
     }
     return message;
   },
@@ -69,11 +84,19 @@ export const GenesisState = {
       (obj.systemInfo = message.systemInfo
         ? SystemInfo.toJSON(message.systemInfo)
         : undefined);
+    if (message.gameList) {
+      obj.gameList = message.gameList.map((e) =>
+        e ? Game.toJSON(e) : undefined
+      );
+    } else {
+      obj.gameList = [];
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
+    message.gameList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromPartial(object.params);
     } else {
@@ -83,6 +106,11 @@ export const GenesisState = {
       message.systemInfo = SystemInfo.fromPartial(object.systemInfo);
     } else {
       message.systemInfo = undefined;
+    }
+    if (object.gameList !== undefined && object.gameList !== null) {
+      for (const e of object.gameList) {
+        message.gameList.push(Game.fromPartial(e));
+      }
     }
     return message;
   },

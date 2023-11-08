@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "wordle/params.proto";
 import "wordle/system_info.proto";
+import "wordle/game.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/TropicalDog17/wordle/x/wordle/types";
@@ -20,6 +21,16 @@ service Query {
 	rpc SystemInfo(QueryGetSystemInfoRequest) returns (QueryGetSystemInfoResponse) {
 		option (google.api.http).get = "/TropicalDog17/wordle/wordle/system_info";
 	}
+// Queries a Game by index.
+	rpc Game(QueryGetGameRequest) returns (QueryGetGameResponse) {
+		option (google.api.http).get = "/TropicalDog17/wordle/wordle/game/{index}";
+	}
+
+	// Queries a list of Game items.
+	rpc GameAll(QueryAllGameRequest) returns (QueryAllGameResponse) {
+		option (google.api.http).get = "/TropicalDog17/wordle/wordle/game";
+	}
+
 // this line is used by starport scaffolding # 2
 }
 
@@ -37,4 +48,22 @@ message QueryGetSystemInfoRequest {}
 message QueryGetSystemInfoResponse {
 	SystemInfo SystemInfo = 1 [(gogoproto.nullable) = false];
 }
+message QueryGetGameRequest {
+	  string index = 1;
+
+}
+
+message QueryGetGameResponse {
+	Game game = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllGameRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllGameResponse {
+	repeated Game game = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
 // this line is used by starport scaffolding # 3

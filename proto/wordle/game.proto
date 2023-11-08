@@ -1,0 +1,13 @@
+syntax = "proto3";
+package tropicaldog17.wordle.wordle;
+
+option go_package = "github.com/TropicalDog17/wordle/x/wordle/types";
+
+message Game {
+  string index = 1; 
+  string secret = 2; 
+  string player = 3; 
+  string moveCount = 4; 
+  
+}
+

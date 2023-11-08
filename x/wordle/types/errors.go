@@ -8,5 +8,5 @@ import (
 
 // x/wordle module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrInvalidPlayer = sdkerrors.Register(ModuleName, 1100, "Invalid player address")
 )
