@@ -90,6 +90,10 @@ export interface WordleGame {
   moveCount?: string;
 }
 
+export interface WordleMsgCreateGameResponse {
+  gameIndex?: string;
+}
+
 /**
  * Params defines the parameters for the module.
  */

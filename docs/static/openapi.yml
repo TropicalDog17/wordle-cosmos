@@ -49699,6 +49699,11 @@ definitions:
         type: string
       moveCount:
         type: string
+  tropicaldog17.wordle.wordle.MsgCreateGameResponse:
+    type: object
+    properties:
+      gameIndex:
+        type: string
   tropicaldog17.wordle.wordle.Params:
     type: object
     description: Params defines the parameters for the module.
