@@ -5,10 +5,12 @@ import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
 import { MsgCreateGame } from "./types/wordle/tx";
+import { MsgDoGuess } from "./types/wordle/tx";
 
 
 const types = [
   ["/tropicaldog17.wordle.wordle.MsgCreateGame", MsgCreateGame],
+  ["/tropicaldog17.wordle.wordle.MsgDoGuess", MsgDoGuess],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -42,6 +44,7 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
     msgCreateGame: (data: MsgCreateGame): EncodeObject => ({ typeUrl: "/tropicaldog17.wordle.wordle.MsgCreateGame", value: MsgCreateGame.fromPartial( data ) }),
+    msgDoGuess: (data: MsgDoGuess): EncodeObject => ({ typeUrl: "/tropicaldog17.wordle.wordle.MsgDoGuess", value: MsgDoGuess.fromPartial( data ) }),
     
   };
 };

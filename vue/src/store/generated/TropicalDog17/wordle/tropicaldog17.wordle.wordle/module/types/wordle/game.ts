@@ -8,9 +8,16 @@ export interface Game {
   secret: string;
   player: string;
   moveCount: string;
+  isWin: boolean;
 }
 
-const baseGame: object = { index: "", secret: "", player: "", moveCount: "" };
+const baseGame: object = {
+  index: "",
+  secret: "",
+  player: "",
+  moveCount: "",
+  isWin: false,
+};
 
 export const Game = {
   encode(message: Game, writer: Writer = Writer.create()): Writer {
@@ -25,6 +32,9 @@ export const Game = {
     }
     if (message.moveCount !== "") {
       writer.uint32(34).string(message.moveCount);
+    }
+    if (message.isWin === true) {
+      writer.uint32(40).bool(message.isWin);
     }
     return writer;
   },
@@ -47,6 +57,9 @@ export const Game = {
           break;
         case 4:
           message.moveCount = reader.string();
+          break;
+        case 5:
+          message.isWin = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -78,6 +91,11 @@ export const Game = {
     } else {
       message.moveCount = "";
     }
+    if (object.isWin !== undefined && object.isWin !== null) {
+      message.isWin = Boolean(object.isWin);
+    } else {
+      message.isWin = false;
+    }
     return message;
   },
 
@@ -87,6 +105,7 @@ export const Game = {
     message.secret !== undefined && (obj.secret = message.secret);
     message.player !== undefined && (obj.player = message.player);
     message.moveCount !== undefined && (obj.moveCount = message.moveCount);
+    message.isWin !== undefined && (obj.isWin = message.isWin);
     return obj;
   },
 
@@ -111,6 +130,11 @@ export const Game = {
       message.moveCount = object.moveCount;
     } else {
       message.moveCount = "";
+    }
+    if (object.isWin !== undefined && object.isWin !== null) {
+      message.isWin = object.isWin;
+    } else {
+      message.isWin = false;
     }
     return message;
   },

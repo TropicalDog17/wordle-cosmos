@@ -13,6 +13,17 @@ export interface MsgCreateGameResponse {
   gameIndex: string;
 }
 
+export interface MsgDoGuess {
+  creator: string;
+  gameIndex: string;
+  letter: string;
+}
+
+export interface MsgDoGuessResponse {
+  guessState: string;
+  win: string;
+}
+
 const baseMsgCreateGame: object = { creator: "", player: "", secret: "" };
 
 export const MsgCreateGame = {
@@ -162,10 +173,175 @@ export const MsgCreateGameResponse = {
   },
 };
 
+const baseMsgDoGuess: object = { creator: "", gameIndex: "", letter: "" };
+
+export const MsgDoGuess = {
+  encode(message: MsgDoGuess, writer: Writer = Writer.create()): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.gameIndex !== "") {
+      writer.uint32(18).string(message.gameIndex);
+    }
+    if (message.letter !== "") {
+      writer.uint32(26).string(message.letter);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgDoGuess {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDoGuess } as MsgDoGuess;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.gameIndex = reader.string();
+          break;
+        case 3:
+          message.letter = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDoGuess {
+    const message = { ...baseMsgDoGuess } as MsgDoGuess;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.gameIndex !== undefined && object.gameIndex !== null) {
+      message.gameIndex = String(object.gameIndex);
+    } else {
+      message.gameIndex = "";
+    }
+    if (object.letter !== undefined && object.letter !== null) {
+      message.letter = String(object.letter);
+    } else {
+      message.letter = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgDoGuess): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.gameIndex !== undefined && (obj.gameIndex = message.gameIndex);
+    message.letter !== undefined && (obj.letter = message.letter);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgDoGuess>): MsgDoGuess {
+    const message = { ...baseMsgDoGuess } as MsgDoGuess;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.gameIndex !== undefined && object.gameIndex !== null) {
+      message.gameIndex = object.gameIndex;
+    } else {
+      message.gameIndex = "";
+    }
+    if (object.letter !== undefined && object.letter !== null) {
+      message.letter = object.letter;
+    } else {
+      message.letter = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgDoGuessResponse: object = { guessState: "", win: "" };
+
+export const MsgDoGuessResponse = {
+  encode(
+    message: MsgDoGuessResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.guessState !== "") {
+      writer.uint32(10).string(message.guessState);
+    }
+    if (message.win !== "") {
+      writer.uint32(18).string(message.win);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgDoGuessResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDoGuessResponse } as MsgDoGuessResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.guessState = reader.string();
+          break;
+        case 2:
+          message.win = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDoGuessResponse {
+    const message = { ...baseMsgDoGuessResponse } as MsgDoGuessResponse;
+    if (object.guessState !== undefined && object.guessState !== null) {
+      message.guessState = String(object.guessState);
+    } else {
+      message.guessState = "";
+    }
+    if (object.win !== undefined && object.win !== null) {
+      message.win = String(object.win);
+    } else {
+      message.win = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgDoGuessResponse): unknown {
+    const obj: any = {};
+    message.guessState !== undefined && (obj.guessState = message.guessState);
+    message.win !== undefined && (obj.win = message.win);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgDoGuessResponse>): MsgDoGuessResponse {
+    const message = { ...baseMsgDoGuessResponse } as MsgDoGuessResponse;
+    if (object.guessState !== undefined && object.guessState !== null) {
+      message.guessState = object.guessState;
+    } else {
+      message.guessState = "";
+    }
+    if (object.win !== undefined && object.win !== null) {
+      message.win = object.win;
+    } else {
+      message.win = "";
+    }
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   CreateGame(request: MsgCreateGame): Promise<MsgCreateGameResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  DoGuess(request: MsgDoGuess): Promise<MsgDoGuessResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -183,6 +359,16 @@ export class MsgClientImpl implements Msg {
     return promise.then((data) =>
       MsgCreateGameResponse.decode(new Reader(data))
     );
+  }
+
+  DoGuess(request: MsgDoGuess): Promise<MsgDoGuessResponse> {
+    const data = MsgDoGuess.encode(request).finish();
+    const promise = this.rpc.request(
+      "tropicaldog17.wordle.wordle.Msg",
+      "DoGuess",
+      data
+    );
+    return promise.then((data) => MsgDoGuessResponse.decode(new Reader(data)));
   }
 }
 

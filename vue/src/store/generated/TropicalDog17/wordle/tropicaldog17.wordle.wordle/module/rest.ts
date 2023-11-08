@@ -88,10 +88,16 @@ export interface WordleGame {
   secret?: string;
   player?: string;
   moveCount?: string;
+  isWin?: boolean;
 }
 
 export interface WordleMsgCreateGameResponse {
   gameIndex?: string;
+}
+
+export interface WordleMsgDoGuessResponse {
+  guessState?: string;
+  win?: string;
 }
 
 /**

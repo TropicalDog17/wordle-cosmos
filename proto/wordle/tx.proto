@@ -8,6 +8,7 @@ option go_package = "github.com/TropicalDog17/wordle/x/wordle/types";
 // Msg defines the Msg service.
 service Msg {
       rpc CreateGame(MsgCreateGame) returns (MsgCreateGameResponse);
+  rpc DoGuess(MsgDoGuess) returns (MsgDoGuessResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -19,6 +20,17 @@ message MsgCreateGame {
 
 message MsgCreateGameResponse {
   string gameIndex = 1;
+}
+
+message MsgDoGuess {
+  string creator = 1;
+  string gameIndex = 2;
+  string letter = 3;
+}
+
+message MsgDoGuessResponse {
+  string guessState = 1;
+  string win = 2;
 }
 
 // this line is used by starport scaffolding # proto/tx/message
