@@ -60,7 +60,7 @@ func (game *Game) Guess(word string) (GuessState, error) {
 
 func ValidWord(word string) bool {
 	var IsLetter = regexp.MustCompile(`^[a-zA-Z]+$`).MatchString
-	return !IsLetter(word)
+	return IsLetter(word)
 }
 
 func (game *Game) ValidGuess(word string) (bool, error) {

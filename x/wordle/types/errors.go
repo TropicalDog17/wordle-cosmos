@@ -8,6 +8,7 @@ import (
 
 // x/wordle module sentinel errors
 var (
-	ErrInvalidPlayer = sdkerrors.Register(ModuleName, 1100, "Invalid player address")
-	ErrInvalidSecret = sdkerrors.Register(ModuleName, 1101, "Invalid secret word")
+	ErrInvalidPlayer  = sdkerrors.Register(ModuleName, 1100, "Invalid player address")
+	ErrInvalidCreator = sdkerrors.Register(ModuleName, 1101, "Invalid creator address")
+	ErrInvalidSecret  = sdkerrors.Register(ModuleName, 1102, "Invalid secret word")
 )

@@ -42,7 +42,11 @@ func (msg *MsgCreateGame) GetSignBytes() []byte {
 func (msg *MsgCreateGame) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(ErrInvalidCreator, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Player)
+	if err != nil {
+		return sdkerrors.Wrapf(ErrInvalidPlayer, "invalid player address (%s)", err)
 	}
 	if !rules.ValidWord(msg.Secret) {
 		return sdkerrors.Wrapf(ErrInvalidSecret, "secret word should contains English letters")
