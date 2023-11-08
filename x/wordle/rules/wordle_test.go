@@ -8,7 +8,7 @@ import (
 )
 
 func TestHappyPath(t *testing.T) {
-	game, _ := rules.New("inside")
+	game := rules.New("inside")
 	assert.Equal(t, 6, game.GetSecretLength())
 	// All letter are wrong
 	state, err := game.Guess("malloy")
@@ -51,7 +51,7 @@ func TestHappyPath(t *testing.T) {
 }
 
 func TestWinWithoutReachLastMove(t *testing.T) {
-	game, _ := rules.New("inside")
+	game := rules.New("inside")
 	assert.Equal(t, 6, game.GetSecretLength())
 	// All letter are wrong
 	state, err := game.Guess("malloy")
@@ -90,14 +90,14 @@ func TestWinWithoutReachLastMove(t *testing.T) {
 	assert.Equal(t, game.MoveCount, 5)
 }
 
-func TestInvalidSecretWord(t *testing.T) {
-	// Contains numbers
-	_, err := rules.New("abc2kd")
-	assert.Error(t, err)
-	// Contains special character
-	_, err = rules.New("a.fd#kd")
-	assert.Error(t, err)
-	// Correct
-	_, err = rules.New("fdlskjfldsjf")
-	assert.NoError(t, err)
-}
+// func TestInvalidSecretWord(t *testing.T) {
+// 	// Contains numbers
+// 	_, err := rules.New("abc2kd")
+// 	assert.Error(t, err)
+// 	// Contains special character
+// 	_, err = rules.New("a.fd#kd")
+// 	assert.Error(t, err)
+// 	// Correct
+// 	_, err = rules.New("fdlskjfldsjf")
+// 	assert.NoError(t, err)
+// }

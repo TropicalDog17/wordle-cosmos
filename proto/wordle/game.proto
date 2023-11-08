@@ -8,6 +8,7 @@ message Game {
   string secret = 2; 
   string player = 3; 
   string moveCount = 4; 
+  bool isWin = 5;
   
 }
 

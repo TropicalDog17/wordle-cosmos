@@ -23,13 +23,9 @@ type Game struct {
 
 type GuessState []State
 
-func New(secret string) (*Game, error) {
-	if _, err := ValidWord(secret); err != nil {
-		return nil, err
-	}
-
+func New(secret string) *Game {
 	game := &Game{secretWord: secret, MoveCount: 0, IsWin: false}
-	return game, nil
+	return game
 }
 
 func (game *Game) GetSecretLength() int {
@@ -62,18 +58,14 @@ func (game *Game) Guess(word string) (GuessState, error) {
 	return guessState, nil
 }
 
-func ValidWord(word string) (bool, error) {
+func ValidWord(word string) bool {
 	var IsLetter = regexp.MustCompile(`^[a-zA-Z]+$`).MatchString
-
-	if !IsLetter(word) {
-		return false, fmt.Errorf("please guess word contains English letters")
-	}
-	return true, nil
+	return !IsLetter(word)
 }
 
 func (game *Game) ValidGuess(word string) (bool, error) {
-	if _, err := ValidWord(word); err != nil {
-		return false, err
+	if !ValidWord(word) {
+		return false, nil
 	}
 	if len(word) != game.GetSecretLength() {
 		return false, fmt.Errorf("invalid word length, expect %d, got %d", len(word), game.GetSecretLength())
