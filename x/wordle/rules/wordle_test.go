@@ -101,3 +101,14 @@ func TestWinWithoutReachLastMove(t *testing.T) {
 // 	_, err = rules.New("fdlskjfldsjf")
 // 	assert.NoError(t, err)
 // }
+
+func TestParseGuessState(t *testing.T) {
+	res := rules.ParseGuessState(rules.GuessState{rules.Wrong, rules.Wrong, rules.Wrong, rules.True, rules.Wrong, rules.True})
+	assert.Equal(t, "WWWTWT", res)
+
+	res = rules.ParseGuessState(rules.GuessState{rules.True, rules.True, rules.True, rules.True, rules.True, rules.True})
+	assert.Equal(t, "TTTTTT", res)
+
+	res = rules.ParseGuessState(rules.GuessState{rules.Partial, rules.Partial, rules.Partial, rules.Partial, rules.Partial, rules.Partial})
+	assert.Equal(t, "PPPPPP", res)
+}

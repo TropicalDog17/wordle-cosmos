@@ -16,7 +16,7 @@ const (
 const maxMovesAllowed = 6
 
 type Game struct {
-	secretWord string
+	SecretWord string
 	MoveCount  int
 	IsWin      bool
 }
@@ -24,12 +24,12 @@ type Game struct {
 type GuessState []State
 
 func New(secret string) *Game {
-	game := &Game{secretWord: secret, MoveCount: 0, IsWin: false}
+	game := &Game{SecretWord: secret, MoveCount: 0, IsWin: false}
 	return game
 }
 
 func (game *Game) GetSecretLength() int {
-	return len(game.secretWord)
+	return len(game.SecretWord)
 }
 
 func (game *Game) Guess(word string) (GuessState, error) {
@@ -41,10 +41,10 @@ func (game *Game) Guess(word string) (GuessState, error) {
 	}
 	guessState := []State{}
 	for pos, char := range word {
-		if !strings.Contains(game.secretWord, string(char)) {
+		if !strings.Contains(game.SecretWord, string(char)) {
 			guessState = append(guessState, Wrong)
 		} else {
-			if string(char) == string(game.secretWord[pos]) {
+			if string(char) == string(game.SecretWord[pos]) {
 				guessState = append(guessState, True)
 			} else {
 				guessState = append(guessState, Partial)
@@ -52,7 +52,7 @@ func (game *Game) Guess(word string) (GuessState, error) {
 		}
 	}
 	game.MoveCount++
-	if word == game.secretWord {
+	if word == game.SecretWord {
 		game.IsWin = true
 	}
 	return guessState, nil
@@ -76,4 +76,19 @@ func (game *Game) ValidGuess(word string) (bool, error) {
 
 func (game *Game) IsOutOfMove() bool {
 	return game.MoveCount >= maxMovesAllowed
+}
+
+func ParseGuessState(guessState []State) string {
+	var result string
+	for _, state := range guessState {
+		switch state {
+		case Partial:
+			result += "P"
+		case Wrong:
+			result += "W"
+		case True:
+			result += "T"
+		}
+	}
+	return result
 }
