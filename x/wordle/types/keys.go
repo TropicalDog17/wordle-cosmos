@@ -17,6 +17,21 @@ const (
 	MemStoreKey = "mem_wordle"
 )
 
+const (
+	GameCreatedEventType      = "new-game-created" // Indicates what event type to listen to
+	GameCreatedEventCreator   = "creator"          // Subsidiary information
+	GameCreatedEventGameIndex = "game-index"       // What game is relevant
+	GameCreatedEventPlayer    = "player"           // Is it relevant to me?
+)
+
+const (
+	MovePlayedEventType       = "move-played"
+	MovePlayedEventCreator    = "creator"
+	MovePlayedEventGameIndex  = "game-index"
+	MovePlayedEventGuessState = "guess-state"
+	MovePlayedEventWinner     = "winner"
+)
+
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }

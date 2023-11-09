@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/TropicalDog17/wordle/x/wordle/rules"
 	"github.com/TropicalDog17/wordle/x/wordle/types"
@@ -32,6 +33,14 @@ func (k msgServer) DoGuess(goCtx context.Context, msg *types.MsgDoGuess) (*types
 	storedGame.MoveCount = uint64(game.MoveCount)
 	storedGame.IsWin = game.IsWin
 	k.Keeper.SetGame(ctx, storedGame)
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(types.MovePlayedEventType,
+			sdk.NewAttribute(types.MovePlayedEventCreator, msg.Creator),
+			sdk.NewAttribute(types.MovePlayedEventGameIndex, msg.GameIndex),
+			sdk.NewAttribute(types.MovePlayedEventWinner, strconv.FormatBool(game.IsWin)),
+			sdk.NewAttribute(types.MovePlayedEventGuessState, rules.ParseGuessState(guessState)),
+		),
+	)
 	return &types.MsgDoGuessResponse{
 		GuessState: rules.ParseGuessState(guessState),
 		Win:        storedGame.IsWin,

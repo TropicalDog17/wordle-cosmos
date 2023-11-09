@@ -21,7 +21,7 @@ export interface MsgDoGuess {
 
 export interface MsgDoGuessResponse {
   guessState: string;
-  win: string;
+  win: boolean;
 }
 
 const baseMsgCreateGame: object = { creator: "", player: "", secret: "" };
@@ -262,7 +262,7 @@ export const MsgDoGuess = {
   },
 };
 
-const baseMsgDoGuessResponse: object = { guessState: "", win: "" };
+const baseMsgDoGuessResponse: object = { guessState: "", win: false };
 
 export const MsgDoGuessResponse = {
   encode(
@@ -272,8 +272,8 @@ export const MsgDoGuessResponse = {
     if (message.guessState !== "") {
       writer.uint32(10).string(message.guessState);
     }
-    if (message.win !== "") {
-      writer.uint32(18).string(message.win);
+    if (message.win === true) {
+      writer.uint32(16).bool(message.win);
     }
     return writer;
   },
@@ -289,7 +289,7 @@ export const MsgDoGuessResponse = {
           message.guessState = reader.string();
           break;
         case 2:
-          message.win = reader.string();
+          message.win = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -307,9 +307,9 @@ export const MsgDoGuessResponse = {
       message.guessState = "";
     }
     if (object.win !== undefined && object.win !== null) {
-      message.win = String(object.win);
+      message.win = Boolean(object.win);
     } else {
-      message.win = "";
+      message.win = false;
     }
     return message;
   },
@@ -331,7 +331,7 @@ export const MsgDoGuessResponse = {
     if (object.win !== undefined && object.win !== null) {
       message.win = object.win;
     } else {
-      message.win = "";
+      message.win = false;
     }
     return message;
   },

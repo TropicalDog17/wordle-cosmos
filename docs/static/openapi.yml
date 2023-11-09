@@ -29479,6 +29479,7 @@ paths:
                       type: string
                     moveCount:
                       type: string
+                      format: uint64
                     isWin:
                       type: boolean
               pagination:
@@ -29606,6 +29607,7 @@ paths:
                     type: string
                   moveCount:
                     type: string
+                    format: uint64
                   isWin:
                     type: boolean
         default:
@@ -49703,6 +49705,7 @@ definitions:
         type: string
       moveCount:
         type: string
+        format: uint64
       isWin:
         type: boolean
   tropicaldog17.wordle.wordle.MsgCreateGameResponse:
@@ -49716,7 +49719,7 @@ definitions:
       guessState:
         type: string
       win:
-        type: string
+        type: boolean
   tropicaldog17.wordle.wordle.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -49736,6 +49739,7 @@ definitions:
               type: string
             moveCount:
               type: string
+              format: uint64
             isWin:
               type: boolean
       pagination:
@@ -49777,6 +49781,7 @@ definitions:
             type: string
           moveCount:
             type: string
+            format: uint64
           isWin:
             type: boolean
   tropicaldog17.wordle.wordle.QueryGetSystemInfoResponse:

@@ -36,4 +36,14 @@ func TestPlayMove(t *testing.T) {
 		GuessState: "WWPWPP",
 		Win:        false,
 	}, *playMoveResponse)
+	playMoveResponse, err = msgServer.DoGuess(context, &types.MsgDoGuess{
+		Creator:   bob,
+		GameIndex: "1",
+		Letter:    "update",
+	})
+	require.Nil(t, err)
+	require.EqualValues(t, types.MsgDoGuessResponse{
+		GuessState: "WWWWPP",
+		Win:        false,
+	}, *playMoveResponse)
 }
