@@ -99,6 +99,9 @@ export interface WordleMsgCreateGameResponse {
 
 export interface WordleMsgDoGuessResponse {
   guessState?: string;
+
+  /** @format uint64 */
+  moveCount?: string;
   win?: boolean;
 }
 

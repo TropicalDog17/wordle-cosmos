@@ -49718,6 +49718,9 @@ definitions:
     properties:
       guessState:
         type: string
+      moveCount:
+        type: string
+        format: uint64
       win:
         type: boolean
   tropicaldog17.wordle.wordle.Params:

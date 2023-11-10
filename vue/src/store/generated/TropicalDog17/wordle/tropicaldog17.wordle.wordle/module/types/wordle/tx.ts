@@ -1,5 +1,6 @@
 /* eslint-disable */
-import { Reader, Writer } from "protobufjs/minimal";
+import { Reader, util, configure, Writer } from "protobufjs/minimal";
+import * as Long from "long";
 
 export const protobufPackage = "tropicaldog17.wordle.wordle";
 
@@ -21,6 +22,7 @@ export interface MsgDoGuess {
 
 export interface MsgDoGuessResponse {
   guessState: string;
+  moveCount: number;
   win: boolean;
 }
 
@@ -262,7 +264,11 @@ export const MsgDoGuess = {
   },
 };
 
-const baseMsgDoGuessResponse: object = { guessState: "", win: false };
+const baseMsgDoGuessResponse: object = {
+  guessState: "",
+  moveCount: 0,
+  win: false,
+};
 
 export const MsgDoGuessResponse = {
   encode(
@@ -272,8 +278,11 @@ export const MsgDoGuessResponse = {
     if (message.guessState !== "") {
       writer.uint32(10).string(message.guessState);
     }
+    if (message.moveCount !== 0) {
+      writer.uint32(16).uint64(message.moveCount);
+    }
     if (message.win === true) {
-      writer.uint32(16).bool(message.win);
+      writer.uint32(24).bool(message.win);
     }
     return writer;
   },
@@ -289,6 +298,9 @@ export const MsgDoGuessResponse = {
           message.guessState = reader.string();
           break;
         case 2:
+          message.moveCount = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
           message.win = reader.bool();
           break;
         default:
@@ -306,6 +318,11 @@ export const MsgDoGuessResponse = {
     } else {
       message.guessState = "";
     }
+    if (object.moveCount !== undefined && object.moveCount !== null) {
+      message.moveCount = Number(object.moveCount);
+    } else {
+      message.moveCount = 0;
+    }
     if (object.win !== undefined && object.win !== null) {
       message.win = Boolean(object.win);
     } else {
@@ -317,6 +334,7 @@ export const MsgDoGuessResponse = {
   toJSON(message: MsgDoGuessResponse): unknown {
     const obj: any = {};
     message.guessState !== undefined && (obj.guessState = message.guessState);
+    message.moveCount !== undefined && (obj.moveCount = message.moveCount);
     message.win !== undefined && (obj.win = message.win);
     return obj;
   },
@@ -327,6 +345,11 @@ export const MsgDoGuessResponse = {
       message.guessState = object.guessState;
     } else {
       message.guessState = "";
+    }
+    if (object.moveCount !== undefined && object.moveCount !== null) {
+      message.moveCount = object.moveCount;
+    } else {
+      message.moveCount = 0;
     }
     if (object.win !== undefined && object.win !== null) {
       message.win = object.win;
@@ -380,6 +403,16 @@ interface Rpc {
   ): Promise<Uint8Array>;
 }
 
+declare var self: any | undefined;
+declare var window: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
 type Builtin = Date | Function | Uint8Array | string | number | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -390,3 +423,15 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (util.Long !== Long) {
+  util.Long = Long as any;
+  configure();
+}
