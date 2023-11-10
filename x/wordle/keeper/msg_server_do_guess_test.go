@@ -24,8 +24,9 @@ func setupMsgServerWithOneGameForPlayMove(t testing.TB, secret string) (types.Ms
 	})
 	return server, *k, context
 }
-func TestPlayMove(t *testing.T) {
+func TestPlayToWinBeforeOutOfMove(t *testing.T) {
 	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t, "secret")
+
 	playMoveResponse, err := msgServer.DoGuess(context, &types.MsgDoGuess{
 		Creator:   bob,
 		GameIndex: "1",
@@ -35,7 +36,9 @@ func TestPlayMove(t *testing.T) {
 	require.EqualValues(t, types.MsgDoGuessResponse{
 		GuessState: "WWPWPP",
 		Win:        false,
+		MoveCount:  1,
 	}, *playMoveResponse)
+
 	playMoveResponse, err = msgServer.DoGuess(context, &types.MsgDoGuess{
 		Creator:   bob,
 		GameIndex: "1",
@@ -45,5 +48,67 @@ func TestPlayMove(t *testing.T) {
 	require.EqualValues(t, types.MsgDoGuessResponse{
 		GuessState: "WWWWPP",
 		Win:        false,
+		MoveCount:  2,
 	}, *playMoveResponse)
+
+	playMoveResponse, err = msgServer.DoGuess(context, &types.MsgDoGuess{
+		Creator:   bob,
+		GameIndex: "1",
+		Letter:    "secret",
+	})
+	require.Nil(t, err)
+	require.EqualValues(t, types.MsgDoGuessResponse{
+		GuessState: "TTTTTT",
+		Win:        true,
+		MoveCount:  3,
+	}, *playMoveResponse)
+
+	// Win now, so can't move anymore
+	_, err = msgServer.DoGuess(context, &types.MsgDoGuess{
+		Creator:   bob,
+		GameIndex: "1",
+		Letter:    "dsadsa",
+	})
+	require.Error(t, types.ErrGameFinished, err)
+
+}
+
+type GameGuessTest struct {
+	guess      string
+	guessState string
+	win        bool
+	moveCount  int
+}
+
+func TestPlayToOutOfMove(t *testing.T) {
+	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t, "secret")
+
+	testCases := []GameGuessTest{
+		{"impose", "WWWWPP", false, 1},
+		{"detect", "WTPPPT", false, 2},
+		{"thanks", "PWWWWP", false, 3},
+		{"update", "WWWWPP", false, 4},
+		{"income", "WWTWWP", false, 5},
+		{"quorum", "WWWTWW", false, 6},
+	}
+	for _, test := range testCases {
+		playMoveResponse, err := msgServer.DoGuess(context, &types.MsgDoGuess{
+			Creator:   bob,
+			GameIndex: "1",
+			Letter:    test.guess,
+		})
+		require.Nil(t, err)
+		require.EqualValues(t, types.MsgDoGuessResponse{
+			GuessState: test.guessState,
+			Win:        test.win,
+			MoveCount:  uint64(test.moveCount),
+		}, *playMoveResponse)
+	}
+	// Out of move, so return an error
+	_, err := msgServer.DoGuess(context, &types.MsgDoGuess{
+		Creator:   bob,
+		GameIndex: "1",
+		Letter:    "somewr",
+	})
+	require.Error(t, types.ErrGameFinished, err)
 }

@@ -13,7 +13,7 @@ const (
 	Partial State = 1
 	True    State = 2
 )
-const maxMovesAllowed = 6
+const MaxMovesAllowed int = 6
 
 type Game struct {
 	SecretWord string
@@ -75,7 +75,7 @@ func (game *Game) ValidGuess(word string) (bool, error) {
 }
 
 func (game *Game) IsOutOfMove() bool {
-	return game.MoveCount >= maxMovesAllowed
+	return game.MoveCount >= MaxMovesAllowed
 }
 
 func ParseGuessState(guessState []State) string {

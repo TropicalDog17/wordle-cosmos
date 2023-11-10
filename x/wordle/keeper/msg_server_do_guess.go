@@ -19,6 +19,9 @@ func (k msgServer) DoGuess(goCtx context.Context, msg *types.MsgDoGuess) (*types
 	if !found {
 		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%s", msg.GameIndex)
 	}
+	if !storedGame.IsWin && storedGame.MoveCount >= uint64(rules.MaxMovesAllowed) {
+		return nil, sdkerrors.Wrapf(types.ErrGameFinished, "out of move")
+	}
 	game := rules.Game{
 		SecretWord: storedGame.Secret,
 		MoveCount:  int(storedGame.MoveCount),
@@ -44,5 +47,6 @@ func (k msgServer) DoGuess(goCtx context.Context, msg *types.MsgDoGuess) (*types
 	return &types.MsgDoGuessResponse{
 		GuessState: rules.ParseGuessState(guessState),
 		Win:        storedGame.IsWin,
+		MoveCount:  storedGame.MoveCount,
 	}, nil
 }

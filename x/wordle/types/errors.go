@@ -14,4 +14,5 @@ var (
 	ErrInvalidGuess     = sdkerrors.Register(ModuleName, 1103, "Invalid guess")
 	ErrInvalidGameIndex = sdkerrors.Register(ModuleName, 1104, "Invalid game index")
 	ErrGameNotFound     = sdkerrors.Register(ModuleName, 1105, "Game not found in storage")
+	ErrGameFinished     = sdkerrors.Register(ModuleName, 1106, "game is already finished")
 )
