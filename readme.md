@@ -8,7 +8,6 @@
 ignite chain serve
 ```
 
-hello
 `serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
 
 ### Configure
