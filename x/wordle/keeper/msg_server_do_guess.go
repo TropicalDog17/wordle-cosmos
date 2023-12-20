@@ -35,6 +35,7 @@ func (k msgServer) DoGuess(goCtx context.Context, msg *types.MsgDoGuess) (*types
 	// Update game to be stored
 	storedGame.MoveCount = uint64(game.MoveCount)
 	storedGame.IsWin = game.IsWin
+	storedGame.Deadline = types.FormatDeadline(types.GetNextDeadline(ctx))
 	k.Keeper.SetGame(ctx, storedGame)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(types.MovePlayedEventType,

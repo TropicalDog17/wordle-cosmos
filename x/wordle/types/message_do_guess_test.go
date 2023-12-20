@@ -17,13 +17,17 @@ func TestMsgDoGuess_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgDoGuess{
-				Creator: "invalid_address",
+				Creator:   "invalid_address",
+				Letter:    "abcdef",
+				GameIndex: "1",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgDoGuess{
-				Creator: sample.AccAddress(),
+				Creator:   sample.AccAddress(),
+				Letter:    "abcdef",
+				GameIndex: "1",
 			},
 		},
 	}

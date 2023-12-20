@@ -15,4 +15,5 @@ var (
 	ErrInvalidGameIndex = sdkerrors.Register(ModuleName, 1104, "Invalid game index")
 	ErrGameNotFound     = sdkerrors.Register(ModuleName, 1105, "Game not found in storage")
 	ErrGameFinished     = sdkerrors.Register(ModuleName, 1106, "game is already finished")
+	ErrInvalidDeadline  = sdkerrors.Register(ModuleName, 1107, "deadline can not be parsed %s")
 )

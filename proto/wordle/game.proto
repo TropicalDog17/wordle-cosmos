@@ -9,6 +9,6 @@ message Game {
   string player = 3; 
   uint64 moveCount = 4; 
   bool isWin = 5;
-  
+  string deadline = 6;
 }
 
