@@ -20,8 +20,9 @@ func setupMsgServerCreateGame(t testing.TB) (types.MsgServer, keeper.Keeper, con
 }
 
 func TestCreateNewGame(t *testing.T) {
-	msgServer, _, ctx := setupMsgServerCreateGame(t)
-	newGameResponse, _ := msgServer.CreateGame(ctx, &types.MsgCreateGame{
+	msgServer, keeper, context := setupMsgServerCreateGame(t)
+	ctx := sdk.UnwrapSDKContext(context)
+	newGameResponse, _ := msgServer.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
 		Player:  bob,
 		Secret:  "hello",
@@ -29,7 +30,14 @@ func TestCreateNewGame(t *testing.T) {
 	assert.EqualValues(t, &types.MsgCreateGameResponse{
 		GameIndex: "1",
 	}, newGameResponse)
-	anotherGameResponse, _ := msgServer.CreateGame(ctx, &types.MsgCreateGame{
+	systemInfo, found := keeper.GetSystemInfo(ctx)
+	assert.True(t, found)
+	assert.EqualValues(t, types.SystemInfo{
+		NextId:        2,
+		FifoHeadIndex: "1",
+		FifoTailIndex: "1",
+	}, systemInfo)
+	anotherGameResponse, _ := msgServer.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
 		Player:  bob,
 		Secret:  "abcdef",
@@ -37,4 +45,12 @@ func TestCreateNewGame(t *testing.T) {
 	assert.EqualValues(t, &types.MsgCreateGameResponse{
 		GameIndex: "2",
 	}, anotherGameResponse)
+	systemInfo, found = keeper.GetSystemInfo(ctx)
+	assert.True(t, found)
+	assert.EqualValues(t, types.SystemInfo{
+		NextId:        3,
+		FifoHeadIndex: "2",
+		FifoTailIndex: "2",
+	}, systemInfo)
+
 }
