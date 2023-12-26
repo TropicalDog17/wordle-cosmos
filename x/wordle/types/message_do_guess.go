@@ -49,6 +49,9 @@ func (msg *MsgDoGuess) ValidateBasic() error {
 	if !rules.ValidWord(msg.Letter) {
 		return sdkerrors.Wrapf(ErrInvalidGuess, "word should only contain English letters")
 	}
+	if len(msg.Letter) < 4 || len(msg.Letter) > 10 {
+		return sdkerrors.Wrapf(ErrInvalidGuess, "word should be in range 4-10, please check the secret length")
+	}
 	gameIndex, err := strconv.ParseInt(msg.GameIndex, 10, 64)
 	if err != nil {
 		return sdkerrors.Wrapf(ErrInvalidGameIndex, "not parseable (%s)", err)
