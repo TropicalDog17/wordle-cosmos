@@ -14,7 +14,10 @@ func (k msgServer) DoGuess(goCtx context.Context, msg *types.MsgDoGuess) (*types
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO: Handling the message
-	_ = ctx
+	systemInfo, found := k.GetSystemInfo(ctx)
+	if !found {
+		panic("System Info not found")
+	}
 	storedGame, found := k.Keeper.GetGame(ctx, msg.GameIndex)
 	if !found {
 		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%s", msg.GameIndex)
@@ -31,10 +34,14 @@ func (k msgServer) DoGuess(goCtx context.Context, msg *types.MsgDoGuess) (*types
 	if guessErr != nil {
 		return nil, sdkerrors.Wrapf(types.ErrInvalidGuess, guessErr.Error())
 	}
-
+	storedGame.IsWin = game.IsWin
+	if !storedGame.IsWin {
+		k.Keeper.SendToFifoTail(ctx, &storedGame, &systemInfo)
+	} else {
+		k.Keeper.RemoveFromFifo(ctx, &storedGame, &systemInfo)
+	}
 	// Update game to be stored
 	storedGame.MoveCount = uint64(game.MoveCount)
-	storedGame.IsWin = game.IsWin
 	storedGame.Deadline = types.FormatDeadline(types.GetNextDeadline(ctx))
 	k.Keeper.SetGame(ctx, storedGame)
 	ctx.EventManager().EmitEvent(

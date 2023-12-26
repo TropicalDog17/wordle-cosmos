@@ -11,7 +11,9 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		SystemInfo: SystemInfo{
-			NextId: uint64(1),
+			NextId:        uint64(1),
+			FifoHeadIndex: NoFifoIndex,
+			FifoTailIndex: NoFifoIndex,
 		},
 		GameList: []Game{},
 		// this line is used by starport scaffolding # genesis/types/default

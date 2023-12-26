@@ -10,5 +10,8 @@ message Game {
   uint64 moveCount = 4; 
   bool isWin = 5;
   string deadline = 6;
+
+  string beforeIndex = 7;
+  string afterIndex = 8;
 }
 

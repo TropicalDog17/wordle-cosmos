@@ -63,3 +63,14 @@ func TestGenesisState_Validate(t *testing.T) {
 		})
 	}
 }
+
+func TestDefaultGenesisState_ExpectedInitialNextId(t *testing.T) {
+	require.EqualValues(t, &types.GenesisState{
+		GameList: []types.Game{},
+		SystemInfo: types.SystemInfo{
+			NextId:        uint64(1),
+			FifoHeadIndex: "-1",
+			FifoTailIndex: "-1",
+		},
+	}, types.DefaultGenesis())
+}

@@ -19,16 +19,19 @@ func (k msgServer) CreateGame(goCtx context.Context, msg *types.MsgCreateGame) (
 	}
 	newIndex := strconv.FormatUint(systemInfo.NextId, 10)
 	storedGame := types.Game{
-		Index:    newIndex,
-		Player:   msg.Player,
-		Secret:   msg.Secret,
-		IsWin:    false,
-		Deadline: types.FormatDeadline(types.GetNextDeadline(ctx)),
+		Index:       newIndex,
+		Player:      msg.Player,
+		Secret:      msg.Secret,
+		IsWin:       false,
+		Deadline:    types.FormatDeadline(types.GetNextDeadline(ctx)),
+		BeforeIndex: types.NoFifoIndex,
+		AfterIndex:  types.NoFifoIndex,
 	}
 	err := storedGame.Validate()
 	if err != nil {
 		return nil, err
 	}
+	k.Keeper.SendToFifoTail(ctx, &storedGame, &systemInfo)
 	k.Keeper.SetGame(ctx, storedGame)
 	systemInfo.NextId++
 	k.Keeper.SetSystemInfo(ctx, systemInfo)
